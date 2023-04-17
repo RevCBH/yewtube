@@ -1,0 +1,26 @@
+[package]
+name = "yewtube"
+version = "0.1.0"
+edition = "2021"
+authors = ["Bennett Hoffman"]
+description = "A YouTube player for Yew"
+homepage = "https://github.com/RevCBH/yewtube"
+license = "MIT"
+repository = "https://github.com/RevCBH/yewtube"
+readme = "README.md"
+keywords = ["yew", "youtube", "player"]
+categories = ["web-programming"]
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+futures = "^0.3.28"
+gloo-console = "0.2.3"
+js-sys = "^0.3.61"
+serde = { version = "1.0.160", features = ["derive"] }
+serde-wasm-bindgen = "0.5.0"
+wasm-bindgen = "^0.2.84"
+wasm-bindgen-futures = "^0.4.34"
+web-sys = { version = "^0.3.61", features = ["HtmlScriptElement"] }
+yew = { version = "^0.20.0", features = ["csr"] }
