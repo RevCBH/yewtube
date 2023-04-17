@@ -112,7 +112,7 @@ pub struct Options {
     pub player_vars: Option<PlayerVars>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PlayerState {
     Unstarted = -1,
     Ended = 0,

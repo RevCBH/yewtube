@@ -5,11 +5,13 @@ use yewtube::component::Player;
 #[function_component(App)]
 fn app() -> Html {
     let player_state = use_state(|| yewtube::ext::PlayerState::Unstarted);
+
     let update_player_state = {
         let player_state = player_state.clone();
-        Callback::from(move |s| {
+
+        Callback::from(move |s: yewtube::ext::PlayerState| {
             log!("updating player state", format!("{:?}", s));
-            player_state.set(s)
+            player_state.set(s);
         })
     };
 

@@ -16,19 +16,6 @@ pub struct Props {
     pub on_state_change: Option<Callback<ext::PlayerState>>,
 }
 
-pub enum State {
-    Uninitialized,
-    Initialized {
-        ext_player: Rc<ext::Player>,
-        on_ready: Rc<Closure<dyn FnMut(JsValue)>>,
-    },
-    Ready {
-        ext_player: Rc<ext::Player>,
-        on_state_change: Rc<Closure<dyn FnMut(JsValue)>>,
-    },
-    Failed,
-}
-
 trait FsmState {
     fn transition(self, msg: Msg, ctx: &Context<Player>) -> PlayerState;
 }
