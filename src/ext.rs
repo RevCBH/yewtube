@@ -1,14 +1,10 @@
-use gloo_console::log;
 use js_sys::Function;
 use serde::Serialize;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::HtmlScriptElement;
 
-// pub struct YT {}
-
 pub async fn load_iframe_api() -> Result<JsValue, JsValue> {
-    log!("loading youtube iframe api...");
     let window = web_sys::window().ok_or("No global `window` exists")?;
     let document = window
         .document()
@@ -18,7 +14,6 @@ pub async fn load_iframe_api() -> Result<JsValue, JsValue> {
         .create_element("script")?
         .dyn_into::<HtmlScriptElement>()?;
     script.set_src("https://www.youtube.com/iframe_api");
-    log!("Inserting script tag");
 
     let (sender, receiver) = futures::channel::oneshot::channel();
 
@@ -31,7 +26,6 @@ pub async fn load_iframe_api() -> Result<JsValue, JsValue> {
     document.body().unwrap().append_child(&script)?;
 
     let result = receiver.await.unwrap();
-    log!("youtube iframe api loaded");
     result
 }
 
@@ -50,16 +44,12 @@ pub fn unsafe_get_player() -> Function {
 }
 
 pub async fn yt_iframe_api_ready() -> Result<JsValue, JsValue> {
-    log!("waiting for youtube iframe api...");
     let window = web_sys::window().unwrap();
     let yt = js_sys::Reflect::get(&window, &"YT".into())?;
-    log!("yt: {:?}", yt.clone());
 
     if !yt.is_undefined() && js_sys::Reflect::has(&yt, &"Player".into())? {
-        log!("youtube iframe api is ready");
         Ok(yt)
     } else {
-        log!("youtube iframe api is not ready");
         load_iframe_api().await?;
         let (sender, receiver) = futures::channel::oneshot::channel();
         let resolve_closure = Closure::once(move || {
@@ -130,6 +120,25 @@ pub enum PlayerState {
     Paused = 2,
     Buffering = 3,
     Cued = 5,
+}
+
+impl TryFrom<JsValue> for PlayerState {
+    type Error = JsValue;
+
+    fn try_from(value: JsValue) -> Result<Self, Self::Error> {
+        let state = js_sys::Reflect::get(&value, &"data".into())?
+            .as_f64()
+            .ok_or("invalid player state")?;
+        match state as i32 {
+            -1 => Ok(PlayerState::Unstarted),
+            0 => Ok(PlayerState::Ended),
+            1 => Ok(PlayerState::Playing),
+            2 => Ok(PlayerState::Paused),
+            3 => Ok(PlayerState::Buffering),
+            5 => Ok(PlayerState::Cued),
+            _ => Err("invalid player state".into()),
+        }
+    }
 }
 
 #[wasm_bindgen]

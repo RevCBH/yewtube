@@ -15,8 +15,7 @@ fn app() -> Html {
 
     html! {
         <div>
-            <h1>{"Hello World!"}</h1>
-            <div>{format!("{:?}", *player_state)}</div>
+            <div>{format!("Player state: {:?}", *player_state)}</div>
             <Player video_id={"r71Nhzh0xMU"} on_state_change={update_player_state}/>
         </div>
     }

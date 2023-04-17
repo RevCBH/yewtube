@@ -1,6 +1,6 @@
 [package]
 name = "yewtube"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Bennett Hoffman"]
 description = "A YouTube player for Yew"
